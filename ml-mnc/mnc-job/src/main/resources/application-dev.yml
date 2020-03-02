@@ -1,0 +1,81 @@
+##info
+info: 
+  app: 
+    url: http://usc-dev.ml.com/usc/
+##server#
+server: 
+  port: 8888
+  tomcat: 
+    maxThreads: 5
+    minSpareThreads: 3
+    maxConnections: 10000
+    acceptCount: 1000
+##profile
+spring:
+  profiles:
+    active: dev
+##datasource config#
+datasource:
+  #read-write#
+  rw:
+    url: jdbc:mysql://rm-2ze0xh993765uw4f3.mysql.rds.aliyuncs.com:3306/mnc_dev?useUnicode=true&characterEncoding=utf8&serverTimezone=CST
+    username: mnc_dev
+    password: 1LeHMLIiJf^zIjK5
+  #only read#
+  r:
+    url: jdbc:mysql://rm-2ze0xh993765uw4f3.mysql.rds.aliyuncs.com:3306/mnc_dev?useUnicode=true&characterEncoding=utf8&serverTimezone=CST
+    username: mnc_dev
+    password: 1LeHMLIiJf^zIjK5
+##redis config#
+redis:
+  host: r-2zeuly0uoqoqjjzxp1.redis.rds.aliyuncs.com
+  port: 6379
+  pass: yolPv8ywHWVVVjYi
+  database: 6
+  pool:
+    maxWaitMillis: 0
+##eureka##
+eureka: 
+  client: 
+    service-url: 
+      defaultZone: http://src-dev.ml.com/src/eureka
+management:
+  endpoint: 
+    beans: 
+      enabled: false
+    health: 
+      show-details: ALWAYS
+  endpoints: 
+    web: 
+      exposure: 
+        include: "*"
+#        exclude: env,beans,scheduledtasks,configprops,loggers,httptrace
+##rabbitMq config
+rabbitmq: 
+  host: devmq.ml.com
+  port: 5672
+  username: wintel
+  password: wintel
+  receive-timeout: 1000
+  reply-timeout: 1000
+
+##okhttp
+okhttp:
+  client:
+    connectTimeout: 15000
+    readTimeout: 1500
+    threadPool:
+      coreThreadSize:
+      maxThreadSize:
+      threadKeepAliveTime:
+    dispatcher:
+      maxRequests: 64
+      maxRequestsPerHost: 5
+
+## USC
+usc:
+  admin:
+    addresses: http://usc-dev.ml.com/usc
+  http: 
+    max-overstock-count: 1500
+    max-failure-count: 100

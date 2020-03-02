@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.icsoc.mnc.admin.query.AppQuery">
+	<sql id="allFields">
+		id,pl_code,pl_name,app_code,app_name,owner_erp,owner_name,dingtalk,member_mobiles,member_emails,alarm_status,need_callback,remark,yn,create_time,update_time
+	</sql>
+	<sql id="allConditions">
+		<where>
+			<if test="plCode!=null and plCode!=''">and pl_code = #{plCode}</if>
+			<if test="appCode!=null and appCode!=''">and app_code = #{appCode}</if>
+			<if test="ownerErp!=null and ownerErp!=''">and owner_erp = #{ownerErp}</if>
+			<if test="alarmStatus!=null">and alarm_status = #{alarmStatus}</if>
+			<if test="needCallback!=null">and need_callback = #{needCallback}</if>
+			<if test="yn!=null">and yn = #{yn}</if>
+		</where>
+	</sql>
+	<select id="selectById" parameterType="java.lang.Long" resultType="AppVO">
+		select
+			<include refid="allFields"/>
+		from 
+			adm_app
+		where
+			id = #{id}
+	</select>
+	
+	<select id="selectAll" resultType="AppVO">
+		select
+			<include refid="allFields"/>
+		from
+			adm_app
+		order by id
+	</select>
+	<select id="select" parameterType="AppVO" resultType="AppVO">
+		select
+			<include refid="allFields"/>
+		from 
+			adm_app
+		<include refid="allConditions"/>
+		order by id
+	</select>
+	<select id="selectByAppCode" resultType="AppVO">
+		select
+			<include refid="allFields"/>
+		from 
+			adm_app
+		where
+			app_code = #{appCode}
+	</select>
+	
+</mapper>

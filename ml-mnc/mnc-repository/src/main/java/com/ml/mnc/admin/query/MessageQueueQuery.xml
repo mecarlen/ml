@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.icsoc.mnc.admin.query.MessageQueueQuery">
+	<sql id="allFields">
+		id,pl_code,app_id,app_code,queue_name,route_key,max_retry_count,retry_intervals,remark,yn,create_time,update_time
+	</sql>
+	<resultMap type="MessageQueueVO" id="messageQueue">
+		<association property="app" column="app_id" select="net.icsoc.mnc.admin.query.AppQuery.selectById"/>
+	</resultMap>
+	<sql id="allConditions">
+		<where>
+			<if test="app!=null and app.id!=null">and app_id = #{app.id}</if>
+			<if test="plCode!=null and plCode!=''">and pl_code = #{plCode}</if>
+			<if test="appCode!=null and appCode!=''">and app_code = #{appCode}</if>
+			<if test="queueName!=null and queueName!=''">and queue_name = #{queueName}</if>
+			<if test="routeKey!=null and routeKey!=''">and route_key = #{routeKey}</if>
+			<if test="maxRetryCount!=null">and max_retry_count = #{maxRetryCount}</if>
+			<if test="yn!=null">and yn = #{yn}</if>
+		</where>
+	</sql>
+	<select id="selectById" parameterType="java.lang.Long" resultType="MessageQueueVO">
+		select
+			<include refid="allFields"/>
+		from 
+			adm_msg_queue
+		where
+			id = #{id}
+	</select>
+	
+	<select id="selectAll" resultType="MessageQueueVO">
+		select
+			<include refid="allFields"/>
+		from
+			adm_msg_queue
+		order by id
+	</select>
+	<select id="select" parameterType="MessageQueueVO" resultType="MessageQueueVO">
+		select
+			<include refid="allFields"/>
+		from 
+			adm_msg_queue
+		<include refid="allConditions"/>
+		order by id
+	</select>
+	<select id="selectByAppAndQueue" resultMap="messageQueue">
+		select
+			<include refid="allFields"/>
+		from 
+			adm_msg_queue
+		where
+			app_code = #{appCode} and queue_name = #{queueName} and route_key = #{routeKey}
+		
+	</select>
+	
+	<select id="selectNormalHttpMsgQueues" resultType="MessageQueueVO">
+		select
+			<include refid="allFields"/>
+		from 
+			adm_msg_queue
+		where
+			yn = 1 and queue_name like 'http.%'
+	</select>
+	
+</mapper>

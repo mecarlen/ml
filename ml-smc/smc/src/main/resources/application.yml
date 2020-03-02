@@ -1,0 +1,81 @@
+##info
+info: 
+  app: 
+    name: SMC-ADMIN
+    version: 1.0
+  owner: 
+    name: 王丰华
+    email: wangfenghua@ml.com
+    mobile: 18186647270
+  developer:
+    - name: 王丰华
+      email: wangfenghua@ml.com
+      mobile: 18186647270
+    - name: 朱志雄
+      email: zhuzhixiong@ml.com
+      mobile: 18158102765
+  group: 
+    name: 智能应用组
+    email: 
+    dingding: https://oapi.dingding.com/robot/send?access_token=a2dfd852a1e625aded0227454d03830f90a9e013db647d7e2f06be37ba655f0d
+##server#
+server: 
+  servlet: 
+    context-path: /smc
+##encoding#
+spring: 
+  http:
+    encoding: 
+      charset: utf8
+  boot: 
+    admin: 
+      monitor: 
+        read-timeout: 10000
+      ui: 
+        title: SMC
+        brand: <img src="assets/img/icon-spring-boot-admin.svg"><span>SMC</span>
+#      context-path: smc
+  application: 
+    name: SMC-ADMIN
+  security: 
+    user: 
+      name: "admin"
+      password: "smc123"
+##jackson#
+  jackson: 
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    joda-date-time-format: 
+    default-property-inclusion: non_null
+##eureka#
+eureka:  
+  instance:
+    lease-renewal-interval-in-seconds: 2
+    lease-expiration-duration-in-seconds: 5
+    health-check-url-path: ${server.servlet.context-path}/actuator/health
+    status-page-url-path: ${server.servlet.context-path}/actuator/info
+    prefer-ip-address: true
+    metadata-map:
+      startup: ${random.int}    #needed to trigger info and endpoint update after restart
+      user.name: ${spring.security.user.name}        #These two are needed so that the server
+      user.password: ${spring.security.user.password}    #can access the protected client endpoints
+      management:
+        context-path: ${server.servlet.context-path}/actuator
+  client:
+    registryFetchIntervalSeconds: 5
+    healthcheck: 
+      enabled: true
+##rabbitMq config
+rabbitmq: 
+  virtual-host: /mnc
+  connection-timeout: 15000
+  dingding: 
+    exchange: mnc.dingding.exchange
+    default: 
+      queue: dingding.default
+      routekey: dingding.default
+##mnc default dingdingUrl
+mnc: 
+  default: 
+    dingdingUrl: https://oapi.dingding.com/robot/send?access_token=de93a399b9276f30f51f61a3be83009ffdc920091347e23bd51eba9896d48a4a&secret=SECe6d4c48fcea020dd432cd06fa67b2a89204c713a6fd680ccd50aec2b3ffb68f5
+    

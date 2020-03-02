@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.icsoc.mnc.http.query.HttpCallbackMsgQuery">
+	<sql id="allFields">
+		id,pl_code,app_id,app_code,queue_name,route_key,vcc_id,business_type,send_url,business_id,return_json,msg_content,
+		retry_count,send_status,yn,create_time,update_time
+	</sql>
+	<sql id="allConditions">
+		<where>
+			<if test="plCode!=null and plCode!=''">and pl_code = #{plCode}</if>
+			<if test="app!=null and app.id!=null">and app_id = #{app.id}</if>
+			<if test="appCode!=null and appCode!=''">and app_code = #{appCode}</if>
+			<if test="queueName!=null and queueName!=''">and queue_name = #{queueName}</if>
+			<if test="routeKey!=null and routeKey!=''">and route_key = #{routeKey}</if>
+			<if test="businessType!=null and businessType!=''">and business_type = #{businessType}</if>
+			<if test="sendUrl!=null and sendUrl!=''">and send_url like concat(#{sendUrl},'%')</if>
+			<if test="vccId!=null and vccId!=''">and vcc_id = #{vccId}</if>
+			<if test="businessId!=null and businessId!=''">and business_id = #{businessId}</if>
+			<if test="sendStatus!=null">and send_status = #{sendStatus}</if>
+			<if test="yn!=null">and yn = #{yn}</if>
+		</where>
+	</sql>
+	<sql id="queryConditions">
+		<where>
+			send_status <![CDATA[ <= ]]> 1 and yn = 1
+			<if test="plCode!=null and plCode!=''">and pl_code = #{plCode}</if>
+			<if test="appCode!=null and appCode!=''">
+				and app_code = #{appCode}
+			</if>
+			<if test="vccId!=null and vccId!=''">and vcc_id = #{vccId}</if>
+			<if test="businessType!=null and businessType!=''">and business_type = #{businessType}</if>
+			<if test="queueName!=null and queueName!=''">and queue_name = #{queueName}</if>
+			<if test="routeKey!=null and routeKey!=''">and route_key = #{routeKey}</if>
+			<if test="maxRetryCount!=null">and retry_count <![CDATA[ < ]]> #{maxRetryCount}</if>
+			<if test="shardIdx!=null and shards!=null">
+				and #{shardIdx} = id % #{shards}
+			</if>
+		</where>
+	</sql>
+	<select id="selectById" parameterType="java.lang.Long" resultType="HttpCallbackMsgVO">
+		select
+			<include refid="allFields"/>
+		from 
+			http_callback_msg
+		where
+			id = #{id}
+	</select>
+	
+	<select id="selectAll" resultType="HttpCallbackMsgVO">
+		select
+			<include refid="allFields"/>
+		from
+			http_callback_msg
+		order by id
+	</select>
+	<select id="select" parameterType="HttpCallbackMsgVO" resultType="HttpCallbackMsgVO">
+		select
+			<include refid="allFields"/>
+		from 
+			http_callback_msg
+		<include refid="allConditions"/>
+		order by id
+	</select>
+	<select id="selectToSendMsgByPage" parameterType="HttpCallbackMsgParams" resultType="HttpCallbackMsgVO">
+		select
+			<include refid="allFields"/>
+		from 
+			http_callback_msg
+		<include refid="queryConditions"/>	
+		order by id
+	</select>
+</mapper>

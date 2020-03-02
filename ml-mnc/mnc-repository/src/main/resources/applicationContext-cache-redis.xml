@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+	<bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+		<property name="maxIdle" value="${redis.pool.maxIdle}" /> 
+		<property name="maxTotal" value="${redis.pool.maxTotal}" />
+		<property name="testOnBorrow" value="${redis.pool.testOnBorrow}" />
+		<property name="maxWaitMillis" value="${redis.pool.maxWaitMillis}"/>
+	</bean>
+	<!-- 单机配置 -->
+	<bean id="jedisSingleConnectionFactory"
+		class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
+		p:host-name="${redis.host}" p:port="${redis.port}" p:password="${redis.pass}" p:database="${redis.database}"
+		p:pool-config-ref="jedisPoolConfig" />
+		
+	<!-- redis 访问的模版 -->
+	<bean id="stringRedisClient" class="org.springframework.data.redis.core.StringRedisTemplate">
+		<property name="connectionFactory" ref="jedisSingleConnectionFactory" />
+	</bean>
+	<bean id="cacheUtils" class="com.ml.util.cache.impl.CacheUtilsSpringDataRedisImpl">
+		<property name="stringRedisClient" ref="stringRedisClient"/>
+	</bean>
+</beans>

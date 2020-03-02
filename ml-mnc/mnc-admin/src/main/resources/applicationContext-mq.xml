@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+	http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit.xsd">
+	<!-- rabbit连接 -->
+	<rabbit:connection-factory id="connectionFactory"
+							   host="${rabbitmq.host}"
+							   port="${rabbitmq.port}"
+							   username="${rabbitmq.username}"
+							   password="${rabbitmq.password}"
+							   virtual-host="${rabbitmq.virtual-host}"
+							   connection-timeout="${rabbitmq.connection-timeout}"/>
+    <!-- 指定admin 自动生成 -->
+    <rabbit:admin id="rabbitAdmin" connection-factory="connectionFactory" auto-startup="true"/>
+	<rabbit:template id="rabbitTemplate" connection-factory="connectionFactory"	reply-timeout="${rabbitmq.reply-timeout}" receive-timeout="${rabbitmq.receive-timeout}"/>
+</beans>

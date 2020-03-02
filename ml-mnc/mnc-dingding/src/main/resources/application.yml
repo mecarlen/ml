@@ -1,0 +1,80 @@
+##info
+info: 
+  app: 
+    name: mnc-dingding
+    version: 1.0
+  owner: 
+    name: 周燕武
+    email: zhouyanwu@icsoc.net
+    mobile: 18871464550
+  developer:
+    - name: 黄涛
+      email: huangtao@icsoc.net
+      mobile: 18271836391
+    - name: 闫达
+      email: yanda@icsoc.net
+      mobile: 18566722456
+    - name: 殷佳亮
+      email: yinjialiang@icsoc.net
+      mobile: 13207116817
+  group: 
+    name: 应用二组
+    email: 
+    dingding: https://oapi.dingding.com/robot/send?access_token=a2dfd852a1e625aded0227454d03830f90a9e013db647d7e2f06be37ba655f0d
+##encoding#
+spring: 
+  http:
+    encoding: 
+      charset: utf8
+  application: 
+    name: mnc-dingding
+##jackson#
+  jackson: 
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    joda-date-time-format: 
+    default-property-inclusion: non_null
+##datasource pool#
+datasource:
+  driver-class-name: com.mysql.jdbc.Driver
+  dbcp2: 
+    initial-size: 5
+    max-active: 50
+    max-wait-millis: 15000
+    min-idle: 5
+##redis pool#
+redis: 
+  pool: 
+    maxIdle: 5
+    maxTotal: 50
+    testOnBorrow: true
+##eureka##
+eureka: 
+  instance: 
+    lease-renewal-interval-in-seconds: 2
+    lease-expiration-duration-in-seconds: 5
+    health-check-url-path: ${server.servlet.context-path}/actuator/health
+    status-page-url-path: ${server.servlet.context-path}/actuator/info
+    prefer-ip-address: true
+    metadata-map:
+      management:
+        context-path: ${server.servlet.context-path}/actuator
+  client: 
+    registryFetchIntervalSeconds: 5
+    healthcheck: 
+      enabled: true
+##rabbitMq config
+rabbitmq: 
+  virtual-host: /mnc
+  connection-timeout: 15000
+  generic: 
+    exchange: mnc.generic.exchange
+    dingding: 
+      queue: dingding.generic
+      routekey: dingding.generic
+##dingding 专属交换器
+  dingding: 
+    exchange: mnc.dingding.exchange
+    default: 
+      queue: dingding.default
+      routekey: dingding.default

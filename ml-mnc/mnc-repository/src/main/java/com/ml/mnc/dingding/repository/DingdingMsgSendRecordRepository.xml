@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.icsoc.mnc.dingtalk.repository.DingdingMsgSendRecordRepository">
+	<insert id="insert" parameterType="DingdingMsgSendRecordEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into dingding_msg_send_record
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="businessUid!=null and businessUid!=''">business_uid,</if>
+			<if test="beginTimeMills!=null">begin_time_mills,</if>
+			<if test="endTimeMills!=null">end_time_mills,</if>
+			<if test="sendStatus!=null">send_status,</if>
+			<if test="sendType!=null">send_type,</if>
+			<if test="senderErp!=null and senderErp!=''">sender_erp,</if>
+			<if test="senderName!=null and senderName!=''">sender_name,</if>
+			<if test="remark!=null">remark,</if>
+			<if test="yn!=null">yn,</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="businessUid!=null and businessUid!=''">#{businessUid},</if>
+			<if test="beginTimeMills!=null">#{beginTimeMills},</if>
+			<if test="endTimeMills!=null">#{endTimeMills},</if>
+			<if test="sendStatus!=null">#{sendStatus},</if>
+			<if test="sendType!=null">#{sendType},</if>
+			<if test="senderErp!=null and senderErp!=''">#{senderErp},</if>
+			<if test="senderName!=null and senderName!=''">#{senderName},</if>
+			<if test="remark!=null">#{remark},</if>
+			<if test="yn!=null">#{yn},</if>
+		</trim>
+	</insert>
+	<update id="update" parameterType="DingdingMsgSendRecordEntity">
+		update
+			dingding_msg_send_record
+		<set>
+			<if test="beginTimeMills!=null">begin_time_mills = #{beginTimeMills},</if>
+			<if test="endTimeMills!=null">end_time_mills = #{endTimeMills},</if>
+			<if test="sendStatus!=null">send_status = #{sendStatus},</if>
+			<if test="sendType!=null">send_type = #{sendType},</if>
+			<if test="senderErp!=null and senderErp!=''">sender_erp = #{senderErp},</if>
+			<if test="senderName!=null and senderName!=''">sender_name = #{senderName},</if>
+			<if test="remark!=null">remark = #{remark},</if>
+			<if test="yn!=null">yn = #{yn},</if>
+		</set>
+		where
+			id = #{id}
+	</update>
+	<delete id="delete" parameterType="DingdingMsgSendRecordEntity">
+		delete from dingding_msg_send_record where id = #{id}
+	</delete>
+</mapper>

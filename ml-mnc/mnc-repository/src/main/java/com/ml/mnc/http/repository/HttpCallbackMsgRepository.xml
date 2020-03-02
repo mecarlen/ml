@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.icsoc.mnc.http.repository.HttpCallbackMsgRepository">
+	<insert id="insert" parameterType="HttpCallbackMsgEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into http_callback_msg
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="plCode!=null and plCode!=''">pl_code</if>
+			<if test="app!=null and app.id!=null">app_id</if>
+			<if test="app!=null and app.appCode!=null">app_code</if>
+			<if test="queueName!=null and queueName!=''">queue_name</if>
+			<if test="routeKey!=null and routeKey!=''">route_key</if>
+			<if test="businessType!=null and businessType!=''">business_type</if>
+			<if test="sendUrl!=null and sendUrl!=''">send_url</if>
+			<if test="vccId!=null and vccId!=''">vcc_id</if>
+			<if test="businessId!=null and businessId!=''">business_id</if>
+			<if test="returnJson!=null and returnJson!=''">return_json</if>
+			<if test="msgContent!=null and msgContent!=''">msg_content</if>
+			<if test="sendStatus!=null">send_status</if>
+			<if test="retryCount!=null">retry_count</if>
+			<if test="yn!=null">yn</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="plCode!=null and plCode!=''">#{plCode}</if>
+			<if test="app!=null and app.id!=null">#{app.id}</if>
+			<if test="app!=null and app.appCode!=null">#{app.appCode}</if>
+			<if test="queueName!=null and queueName!=''">#{queueName}</if>
+			<if test="routeKey!=null and routeKey!=''">#{routeKey}</if>
+			<if test="businessType!=null and businessType!=''">#{businessType}</if>
+			<if test="sendUrl!=null and sendUrl!=''">#{sendUrl}</if>
+			<if test="vccId!=null and vccId!=''">#{vccId}</if>
+			<if test="businessId!=null and businessId!=''">#{businessId}</if>
+			<if test="returnJson!=null and returnJson!=''">#{returnJson}</if>
+			<if test="msgContent!=null and msgContent!=''">#{msgContent}</if>
+			<if test="sendStatus!=null">#{sendStatus}</if>
+			<if test="retryCount!=null">#{retryCount}</if>
+			<if test="yn!=null">#{yn}</if>
+		</trim>
+	</insert>
+	<insert id="batchInsert" useGeneratedKeys="true" keyProperty="id">
+		insert into http_callback_msg(pl_code,app_id,app_code,queue_name,route_key,business_type,send_url,vcc_id,business_id,return_json,
+		msg_content,send_status,retry_count)
+		values
+		<foreach collection="list" item="entity" separator=",">
+			(#{entity.plCode},#{entity.app.id},#{entity.app.appCode},#{entity.queueName},#{entity.routeKey},#{entity.businessType},#{entity.sendUrl}
+			,#{entity.vccId},#{entity.businessId},#{entity.returnJson},#{entity.msgContent},#{entity.sendStatus},#{entity.retryCount})
+		</foreach>
+		ON DUPLICATE KEY UPDATE
+			retry_count = VALUES(retry_count),
+			send_status = VALUES(send_status)
+		
+	</insert>
+	<update id="update" parameterType="HttpCallbackMsgEntity">
+		update
+			http_callback_msg
+		<set>
+			<if test="vccId!=null and vccId!=''">vcc_id = #{vccId},</if>
+			<if test="returnJson!=null and returnJson!=''">return_json = #{returnJson},</if>
+			<if test="msgContent!=null and msgContent!=''">msg_content = #{msgContent},</if>
+			<if test="sendStatus!=null">send_status = #{sendStatus},</if>
+			<if test="retryCount!=null">retry_count = #{retryCount},</if>
+			<if test="yn!=null">yn = #{yn},</if>
+		</set>
+		where
+			id = #{id}
+			<if test="preSendStatus!=null">and send_status = #{preSendStatus}</if>
+	</update>
+	<delete id="delete" parameterType="HttpCallbackMsgEntity">
+		delete from http_callback_msg where id = #{id}
+	</delete>
+</mapper>

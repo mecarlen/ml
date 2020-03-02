@@ -1,0 +1,54 @@
+Configuration:
+  status: warn
+
+  Properties: # 定义全局变量
+    Property: # 缺省配置（用于开发环境）。其他环境需要在VM参数中指定，如下：
+      #测试：-Dlog.level.console=warn -Dlog.level.smc=trace
+      #生产：-Dlog.level.console=warn -Dlog.level.smc=info
+      - name: log.level.console
+        value: info
+      - name: log.level.smc
+        value: info
+      - name: root.path
+        value: /var/log/app/smc.ml.com
+      - name: project.name
+        value: smc
+
+  Appenders:
+    Console:  #输出到控制台
+      name: CONSOLE
+      target: SYSTEM_OUT
+      ThresholdFilter:
+        level: ${sys:log.level.console} # “sys:”表示：如果VM参数中没指定这个变量值，则使用本文件中定义的缺省全局变量值
+        onMatch: ACCEPT
+        onMismatch: DENY
+      PatternLayout:
+        pattern: "%d{yyyy-MM-dd HH:mm:ss,SSS}{GMT+8}:%4p %t (%F:%L) - %m%n"
+    RollingFile: # 输出到文件，超过150MB归档
+      - name: smc-ALL
+        ignoreExceptions: false
+        fileName: "${root.path}/smc-all.log"
+        filePattern: "${root.path}/smc-all-%d{yyyy-MM-dd}-%i.log"
+        PatternLayout:
+          pattern: "%d{yyyy-MM-dd HH:mm:ss,SSS}{GMT+8} %level:%4p %t (%F:%L) - %m%n"
+        Policies:
+          TimeBasedTriggeringPolicy: 
+            interval: 1
+            modulate: true
+          SizeBasedTriggeringPolicy:
+            size: "450 MB"
+        DefaultRolloverStrategy:
+          max: 10
+  Loggers:
+    Root:
+      level: ${log.level.console}
+      AppenderRef:
+        - ref: CONSOLE
+        #- ref: smc-ALL
+    Logger: # 为com.xjj包配置特殊的Log级别，方便调试
+      - name: net.icsoc.smc
+        additivity: false
+        level: ${sys:log.level.smc}
+        AppenderRef:
+          - ref: CONSOLE
+          #- ref: smc-ALL

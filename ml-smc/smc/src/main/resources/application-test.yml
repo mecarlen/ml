@@ -1,0 +1,43 @@
+##profile
+spring:
+  profiles:
+    active: test
+##info
+info: 
+  app: 
+    url: http://smc-test.ml.com/smc
+##server#
+server: 
+  port: 8888
+##eureka#
+eureka:  
+  client:
+    serviceUrl:
+      defaultZone: http://${spring.security.user.name}:${spring.security.user.password}@src-test.ml.com/src/eureka
+  instance: 
+    #eureka服务器在接收到最后一个心跳之后等待的时间，然后才能从列表中删除此实例 默认90s（开发环境)
+    lease-expiration-duration-in-seconds: 10
+    #eureka客户端需要向eureka服务器发送心跳的频率 默认30s （开发环境)
+    lease-renewal-interval-in-seconds: 1
+management:
+  endpoint: 
+    beans: 
+      enabled: false
+    health: 
+      show-details: ALWAYS
+  endpoints: 
+    web: 
+      exposure: 
+        include: "*"
+#        exclude: env,beans,scheduledtasks,configprops,loggers,httptrace
+##rabbitMq config
+rabbitmq: 
+  addresses: testmq.ml.com:5672
+  username: wintel
+  password: wintel
+  receive-timeout: 1000
+  reply-timeout: 1000
+#mnc default dingdingurl
+mnc: 
+  default: 
+    dingdingUrl: https://oapi.dingding.com/robot/send?access_token=a2dfd852a1e625aded0227454d03830f90a9e013db647d7e2f06be37ba655f0d

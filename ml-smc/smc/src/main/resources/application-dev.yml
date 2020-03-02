@@ -1,0 +1,39 @@
+##profile
+spring:
+  profiles:
+    active: dev
+##info
+info: 
+  app: 
+    url: http://smc-dev.ml.com/smc
+##server#
+server: 
+  port: 8888
+##eureka#
+eureka:  
+  client:
+    serviceUrl:
+      defaultZone: http://src-dev.ml.com/src/eureka
+management:
+  endpoint: 
+    beans: 
+      enabled: false
+    health: 
+      show-details: ALWAYS
+  endpoints: 
+    web: 
+      exposure: 
+        include: "*"
+#        exclude: env,beans,scheduledtasks,configprops,loggers,httptrace
+##rabbitMq config
+rabbitmq: 
+  addresses: devmq.ml.com:5672
+  username: wintel
+  password: wintel
+  receive-timeout: 1000
+  reply-timeout: 1000
+#mnc default dingdingurl
+mnc: 
+  default: 
+    dingdingUrl: https://oapi.dingding.com/robot/send?access_token=a2dfd852a1e625aded0227454d03830f90a9e013db647d7e2f06be37ba655f0d
+  

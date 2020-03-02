@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+	http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit.xsd">
+	<!-- rabbit连接 -->
+	<rabbit:connection-factory id="connectionFactory"
+                             host="${rabbitmq.host}"
+                             port="${rabbitmq.port}"
+                             username="${rabbitmq.username}"
+                             password="${rabbitmq.password}" virtual-host="${rabbitmq.virtual-host}" connection-timeout="${rabbitmq.connection-timeout}"/>
+    <!-- 指定admin 自动生成 -->
+    <rabbit:admin id="rabbitAdmin" connection-factory="connectionFactory" auto-startup="true"/>
+    <rabbit:template id="rabbitTemplate" connection-factory="connectionFactory" reply-timeout="${rabbitmq.reply-timeout}" receive-timeout="${rabbitmq.receive-timeout}"/>
+    <!-- 通用通道 -->
+    <rabbit:queue id="genericDingdingQueue" name="${rabbitmq.generic.dingding.queue}"  auto-delete="false" durable="true" exclusive="false"/>
+    <rabbit:topic-exchange id="rabbitExchange" name="${rabbitmq.generic.exchange}" durable="true" auto-delete="false">
+        <rabbit:bindings>
+            <rabbit:binding queue="genericDingdingQueue" pattern="${rabbitmq.generic.dingding.routekey}"/>
+        </rabbit:bindings>
+    </rabbit:topic-exchange>
+    <bean id="genericDingdingMsgListener" class="com.ml.mnc.dingding.consumer.DingdingMsgListener"/>
+    
+    <!-- 专用钉钉通道 -->
+    <rabbit:queue id="dingdingQueue" name="${rabbitmq.dingding.default.queue}" auto-delete="false" durable="true" exclusive="false"/>
+    <rabbit:topic-exchange id="rabbitExchange" name="${rabbitmq.dingding.exchange}" durable="true" auto-delete="false">
+        <rabbit:bindings>
+            <rabbit:binding queue="dingdingQueue" pattern="${rabbitmq.dingding.default.routekey}"/>
+        </rabbit:bindings>
+    </rabbit:topic-exchange>
+    <bean id="dingdingMsgListener" class="com.ml.mnc.dingding.consumer.DingdingMsgListener"/>
+    
+    <rabbit:listener-container connection-factory="connectionFactory" acknowledge="manual">
+    	<rabbit:listener ref="dingdingMsgListener" method="onMessage" queue-names="${rabbitmq.dingding.default.queue}"/>
+        <rabbit:listener ref="genericDingdingMsgListener" method="onMessage" queue-names="${rabbitmq.generic.dingding.queue}"/>
+    </rabbit:listener-container>
+</beans>

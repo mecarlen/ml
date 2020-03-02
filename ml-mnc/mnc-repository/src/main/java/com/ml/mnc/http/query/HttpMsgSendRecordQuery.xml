@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.icsoc.mnc.http.query.HttpMsgSendRecordQuery">
+	<sql id="allFields">
+		id,business_uid,begin_time_mills,end_time_mills,send_status,send_type,sender_erp,sender_name,remark,yn,create_time,update_time
+	</sql>
+	<sql id="allConditions">
+		<where>
+			<if test="businessUid!=null and businessUid!=''">and business_uid = #{businessUid}</if>
+			<if test="senderErp!=null and senderErp!=''">and sender_erp = #{senderErp}</if>
+			<if test="sendStatus!=null">and send_status = #{sendStatus}</if>
+			<if test="sendType!=null">and send_type = #{sendType}</if>
+			<if test="yn!=null">and yn = #{yn}</if>
+		</where>
+	</sql>
+	<select id="selectById" parameterType="java.lang.Long" resultType="HttpMsgSendRecordVO">
+		select
+			<include refid="allFields"/>
+		from 
+			http_msg_send_record
+		where
+			id = #{id}
+	</select>
+	
+	<select id="selectAll" resultType="HttpMsgSendRecordVO">
+		select
+			<include refid="allFields"/>
+		from
+			http_msg_send_record
+		order by id
+	</select>
+	<select id="select" parameterType="HttpMsgSendRecordVO" resultType="HttpMsgSendRecordVO">
+		select
+			<include refid="allFields"/>
+		from 
+			http_msg_send_record
+		<include refid="allConditions"/>
+		order by id
+	</select>
+	<select id="selectByBusinessUid" resultType="HttpMsgSendRecordVO">
+		select
+			<include refid="allFields"/>
+		from 
+			http_msg_send_record
+		where
+			business_uid = #{businessUid}
+		order by id desc
+	</select>
+</mapper>

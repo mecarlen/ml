@@ -1,0 +1,76 @@
+##server#
+server: 
+  port: 8888
+  tomcat: 
+    maxThreads: 5
+    minSpareThreads: 3
+  servlet: 
+    context-path: /http
+##profile
+spring:
+  profiles:
+    active: test
+##swagger2 enable
+swagger: 
+  enable: true
+##datasource config#
+datasource:
+  #read-write#
+  rw: 
+    url: jdbc:mysql://pc-2ze594uc6m5ny2y8k.mysql.polardb.rds.aliyuncs.com:3306/mnc_test?useUnicode=true&characterEncoding=utf8&serverTimezone=CST
+    username: mnc_test
+    password: ehWNpZHSHjmOb3jD
+  #only read#
+  r: 
+    url: jdbc:mysql://pc-2ze594uc6m5ny2y8k.mysql.polardb.rds.aliyuncs.com:3306/mnc_test?useUnicode=true&characterEncoding=utf8&serverTimezone=CST
+    username: mnc_test
+    password: ehWNpZHSHjmOb3jD
+##redis config#
+redis: 
+  host: r-2zeuly0uoqoqjjzxp1.redis.rds.aliyuncs.com
+  port: 6379
+  pass: yolPv8ywHWVVVjYi
+  database: 8
+  pool: 
+    maxWaitMillis: 0
+##eureka##
+eureka: 
+  client: 
+    service-url: 
+      defaultZone: http://src-test.ml.com/src/eureka
+management:
+  endpoint: 
+    beans: 
+      enabled: false
+    health: 
+      show-details: ALWAYS
+  endpoints: 
+    web: 
+      exposure: 
+        include: "*"
+#        exclude: env,beans,scheduledtasks,configprops,loggers,httptrace
+##rabbitMq config
+rabbitmq:
+  host: testmq.ml.com
+  port: 5672
+  username: wintel
+  password: wintel
+  receive-timeout: 1000
+  reply-timeout: 1000
+  listener: 
+    concurrency: 10
+    max-concurrency: 10
+    prefetch: 150
+##okhttp
+okhttp:
+  client: 
+    connectTimeout: 500
+    readTimeout: 5000
+    threadPool: 
+      coreThreadSize: 100
+      maxThreadSize: 400
+      threadKeepAliveTime: 60000
+    dispatcher: 
+      maxRequests: 500
+      maxRequestsPerHost: 300
+  max-retry: 2

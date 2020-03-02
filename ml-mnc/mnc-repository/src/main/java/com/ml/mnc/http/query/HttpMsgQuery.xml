@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.icsoc.mnc.http.query.HttpMsgQuery">
+	<sql id="allFields">
+		id,pl_code,app_id,app_code,queue_name,route_key,vcc_id,business_type,business_id,msg_content,business_accept_time_mills,send_url,auth_json,
+		auth_expire_time_mills,success_field_code,specify_send_time_mills,retry_interval,accept_time_mills,first_send_time_mills,next_send_time_mills,
+		first_success_send_time_mills,retry_count,auto_retry_count,send_status,yn,create_time,update_time
+	</sql>
+	<sql id="allConditions">
+		<where>
+			<if test="plCode!=null and plCode!=''">and pl_code = #{plCode}</if>
+			<if test="appCode!=null and appCode!=''">and app_code = #{appCode}</if>
+			<if test="vccId!=null and vccId!=''">and vcc_id = #{vccId}</if>
+			<if test="businessType!=null and businessType!=''">and business_type = #{businessType}</if>
+			<if test="businessId!=null and businessId!=''">and business_id = #{businessId}</if>
+			<if test="queueName!=null and queueName!=''">and queue_name = #{queueName}</if>
+			<if test="routeKey!=null and routeKey!=''">and route_key = #{routeKey}</if>
+			<if test="sendStatus!=null">and send_status = #{sendStatus}</if>
+			<if test="maxRetryCount!=null">and retry_count <![CDATA[ < ]]> #{maxRetryCount}</if>
+			<if test="yn!=null">and yn = #{yn}</if>
+		</where>
+	</sql>
+	<sql id="queryConditions">
+		<if test="plCode!=null and plCode!=''">and pl_code = #{plCode}</if>
+		<if test="appCode!=null and appCode!=''">and app_code = #{appCode}</if>
+		<if test="vccId!=null">and vcc_id = #{vccId}</if>
+		<if test="targetUrls!=null and targetUrls.size()>0">
+		    and
+			<foreach collection="targetUrls" item="targetUrl" open="(" close=")" separator="or">
+				send_url like concat(#{targetUrl},'%')
+			</foreach>
+		</if>
+		<if test="excludeTargetUrls!=null and excludeTargetUrls.size()>0">
+		    and
+			<foreach collection="excludeTargetUrls" item="excludeTargetUrl" open="(" close=")" separator="and">
+				send_url not like concat(#{excludeTargetUrl},'%')
+			</foreach>
+		</if>
+		<if test="businessType!=null and businessType!=''">and business_type = #{businessType}</if>
+		<if test="queueName!=null and queueName!=''">and queue_name = #{queueName}</if>
+		<if test="routeKey!=null and routeKey!=''">and route_key = #{routeKey}</if>
+		<if test="vccIds!=null and vccIds.size()>0">
+			and vcc_id in <foreach collection="vccIds" item="vccId" open="(" close=")" separator=",">#{vccId}</foreach>
+		</if>
+		<if test="excludeVccIds!=null and excludeVccIds.size()>0">
+			and vcc_id not in <foreach collection="excludeVccIds" item="vccId" open="(" close=")" separator=",">#{vccId}</foreach>
+		</if>
+		<if test="maxRetryCount!=null">and retry_count <![CDATA[ < ]]> #{maxRetryCount}</if>
+		<if test="currentSendTimeMills!=null">
+			and (next_send_time_mills <![CDATA[ >= ]]> #{beforeSendTimeMills} and next_send_time_mills <![CDATA[ <= ]]> #{currentSendTimeMills})
+		</if>
+		<if test="shardIdx!=null and shards!=null">
+			and #{shardIdx} = id % #{shards}
+		</if>
+	</sql>
+	<select id="selectById" parameterType="java.lang.Long" resultType="HttpMsgVO">
+		select
+			<include refid="allFields"/>
+		from 
+			http_msg
+		where
+			id = #{id}
+	</select>
+	
+	<select id="selectAll" resultType="HttpMsgVO">
+		select
+			<include refid="allFields"/>
+		from
+			http_msg
+		order by id
+	</select>
+	<select id="select" parameterType="HttpMsgVO" resultType="HttpMsgVO">
+		select
+			<include refid="allFields"/>
+		from 
+			http_msg
+		<include refid="allConditions"/>
+		order by id
+	</select>
+	<select id="selectDelayMsgByPage" parameterType="HttpMsgParams" resultType="HttpMsgVO">
+		select
+			<include refid="allFields"/>
+		from 
+			http_msg
+		where
+			send_status = 0 and yn = 1
+			<include refid="queryConditions"/>	
+		order by id desc
+	</select>
+	
+	<select id="selectRetryMsgByPage" parameterType="HttpMsgParams" resultType="HttpMsgVO">
+		select
+			<include refid="allFields"/>
+		from 
+			http_msg
+		where
+			send_status = 1 and yn = 1
+			<include refid="queryConditions"/>	
+		order by id desc
+	</select>
+	
+	<select id="selectFailureSendMsgByPage" parameterType="HttpMsgParams" resultType="HttpMsgVO">
+		select
+			<include refid="allFields"/>
+		from 
+			http_msg
+		where
+			send_status = -1 and yn = 1
+			<include refid="queryConditions"/>	
+		order by id desc
+	</select>
+	<select id="selectDelaySendMsgCount" parameterType="HttpMsgParams" resultType="java.lang.Integer">
+		select
+			count(id)
+		from 
+			http_msg
+		where
+			send_status = 0 and yn = 1
+			<include refid="queryConditions"/>
+	</select>
+	<select id="selectRetrySendMsgCount" parameterType="HttpMsgParams" resultType="java.lang.Integer">
+		select
+			count(id)
+		from 
+			http_msg
+		where
+			send_status = 1 and yn = 1
+			<include refid="queryConditions"/>
+	</select>
+	<select id="selectSendFailureMsgCount" parameterType="HttpMsgParams" resultType="java.lang.Integer">
+		select
+			count(id)
+		from 
+			http_msg
+		where
+			send_status = -1 and yn = 1
+			<include refid="queryConditions"/>
+	</select>
+	
+</mapper>

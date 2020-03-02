@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:sharding="http://shardingsphere.io/schema/shardingsphere/sharding"
+	xmlns:master-slave="http://shardingsphere.io/schema/shardingsphere/masterslave"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+	http://www.springframework.org/schema/tx 
+	http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+	http://shardingsphere.io/schema/shardingsphere/sharding 
+    http://shardingsphere.io/schema/shardingsphere/sharding/sharding.xsd 
+    http://shardingsphere.io/schema/shardingsphere/masterslave  
+    http://shardingsphere.io/schema/shardingsphere/masterslave/master-slave.xsd">
+	<!-- 配置数据源-写 -->
+	<bean id="dataSource_rw"
+		class="com.alibaba.druid.pool.DruidDataSource" init-method="init"
+		destroy-method="close" primary="true">
+		<property name="driverClassName"
+			value="${datasource.driver-class-name}" />
+		<property name="url" value="${datasource.rw.url}" />
+		<property name="username" value="${datasource.rw.username}" />
+		<property name="password" value="${datasource.rw.password}" />
+		<!-- 初始化连接大小 -->
+		<property name="initialSize" value="${datasource.dbcp2.initial-size}" />
+		<!-- 连接池最大使用连接数量 -->
+		<property name="maxActive" value="${datasource.dbcp2.max-active}" />
+		<!-- 连接池最小空闲 -->
+		<property name="minIdle" value="${datasource.dbcp2.min-idle}" />
+		<!-- 获取连接最大等待时间 -->
+		<property name="maxWait" value="${datasource.dbcp2.max-wait-millis}" />
+		<property name="timeBetweenEvictionRunsMillis" value="60000" />
+		<property name="minEvictableIdleTimeMillis" value="180000" />
+		<property name="connectionInitSqls">
+			<list>
+				<value>set names utf8mb4;</value>
+			</list>
+		</property>
+		<property name="validationQuery" value="SELECT 'x'" />
+		<property name="testWhileIdle" value="true" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testOnReturn" value="false" />
+	</bean>
+	<bean id="sqlSessionFactory_rw"
+		class="org.mybatis.spring.SqlSessionFactoryBean" primary="true">
+		<property name="dataSource" ref="dataSource_rw" />
+		<property name="mapperLocations"
+			value="classpath*:net/icsoc/mnc/**/repository/*.xml" />
+			<property name="vfs" value="org.mybatis.spring.boot.autoconfigure.SpringBootVFS" />
+		<property name="configLocation"
+			value="classpath:mybatis-config.xml" />
+	</bean>
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="sqlSessionFactoryBeanName"
+			value="sqlSessionFactory_rw" />
+		<property name="basePackage"
+			value="net.icsoc.mnc.**.repository" />
+	</bean>
+	<!-- Transaction manager for a single JDBC DataSource -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource_rw" />
+	</bean>
+	<!-- 使用annotation定义事务 <tx:annotation-driven transaction-manager="transactionManager" 
+		/> -->
+
+	<tx:advice id="txAdvice_rw"
+		transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="find*" read-only="true" />
+			<tx:method name="get*" read-only="true" />
+			<tx:method name="*" propagation="REQUIRED" />
+		</tx:attributes>
+	</tx:advice>
+	<aop:config>
+		<aop:pointcut id="serviceMethodsPointcut"
+			expression="execution(* net.icsoc.mnc..*.service.*Service.*(..))" />
+		<aop:advisor advice-ref="txAdvice_rw"
+			pointcut-ref="serviceMethodsPointcut" />
+	</aop:config>
+	<!-- 配置数据源-读 -->
+	<bean id="dataSource_r"
+		class="com.alibaba.druid.pool.DruidDataSource" init-method="init"
+		destroy-method="close">
+		<property name="driverClassName"
+			value="${datasource.driver-class-name}" />
+		<property name="url" value="${datasource.r.url}" />
+		<property name="username" value="${datasource.r.username}" />
+		<property name="password" value="${datasource.r.password}" />
+		<!-- 初始化连接大小 -->
+		<property name="initialSize" value="${datasource.dbcp2.initial-size}" />
+		<!-- 连接池最大使用连接数量 -->
+		<property name="maxActive" value="${datasource.dbcp2.max-active}" />
+		<!-- 连接池最小空闲 -->
+		<property name="minIdle" value="${datasource.dbcp2.min-idle}" />
+		<!-- 获取连接最大等待时间 -->
+		<property name="maxWait" value="${datasource.dbcp2.max-wait-millis}" />
+		<property name="timeBetweenEvictionRunsMillis" value="60000" />
+		<property name="minEvictableIdleTimeMillis" value="180000" />
+		<property name="validationQuery" value="SELECT 'x'" />
+		<property name="testWhileIdle" value="true" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testOnReturn" value="false" />
+	</bean>
+	<bean id="sqlSessionFactory_r"
+		class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource_r" />
+		<property name="mapperLocations"
+			value="classpath*:net/icsoc/mnc/**/query/*.xml" />
+		<property name="vfs" value="org.mybatis.spring.boot.autoconfigure.SpringBootVFS" />
+		<property name="configLocation"
+			value="classpath:mybatis-config.xml" />
+	</bean>
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="sqlSessionFactoryBeanName"
+			value="sqlSessionFactory_r" />
+		<property name="basePackage" value="net.icsoc.mnc.**.query" />
+	</bean>
+</beans>

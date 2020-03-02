@@ -1,0 +1,65 @@
+info: 
+  app: 
+    name: src 
+    version: 1.0
+  owner: 
+    name: 王丰华
+    email: wangfenghua@ml.com
+    mobile: 18186647270
+  developer:
+    - name: 王丰华
+      email: wangfenghua@ml.com
+      mobile: 18186647270
+    - name: 朱志雄
+      email: zhuzhixiong@ml.com
+      mobile: 18158102765
+  group: 
+    name: 智能应用组
+    email: 
+    dingding: https://oapi.dingding.com/robot/send?access_token=a2dfd852a1e625aded0227454d03830f90a9e013db647d7e2f06be37ba655f0d
+##server#
+server: 
+  servlet: 
+    context-path: /src
+##encoding#
+spring: 
+  http:
+    encoding: 
+      charset: utf8
+  application: 
+    name: src
+##jackson#
+  jackson: 
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    joda-date-time-format: 
+    default-property-inclusion: non_null
+##eureka##
+eureka: 
+  datacenter: SRC
+  instance: 
+##实例健康检查相对URL
+    health-check-url-path: ${server.servlet.context-path}/actuator/health
+##实例状态页相对ur
+    status-page-url-path: ${server.servlet.context-path}/actuator/info
+##是否优先使用IP地址作为主机名的标识
+    prefer-ip-address: true
+    metadata-map: 
+      management:
+        context-path: ${server.servlet.context-path}/actuator
+  server: 
+##集群里eureka节点的变化信息更新的时间间隔，单位为毫秒
+    peerEurekaNodesUpdateIntervalMs: 60000
+##服务器节点的状态信息被更新的时间间隔
+    peerEurekaStatusRefreshTimeIntervalMs: 30000
+##当eureka服务器启动时获取其他服务器的注册信息失败时，会再次尝试获取，期间需要等待的时间
+    registrySyncRetryWaitMs: 15000
+  client: 
+##定时从Eureka Server拉取服务注册信息的间隔时间
+    registryFetchIntervalSeconds: 5
+    healthcheck: 
+      enabled: true
+     # 是否从其他的服务中心同步服务列表
+    fetch-registry: true
+     # 是否把自己作为服务注册到其他服务注册中心
+    register-with-eureka: true

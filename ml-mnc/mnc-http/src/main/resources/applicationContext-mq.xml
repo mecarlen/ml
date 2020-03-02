@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+	http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit.xsd">
+	<!-- rabbit连接 -->
+	<rabbit:connection-factory id="mncHttpConnectionFactory"
+                             host="${rabbitmq.host}"
+                             port="${rabbitmq.port}"
+                             username="${rabbitmq.username}"
+                             password="${rabbitmq.password}" virtual-host="${rabbitmq.virtual-host}" connection-timeout="${rabbitmq.connection-timeout}"/>
+    <!-- 指定admin 自动生成 -->
+    <rabbit:admin id="rabbitAdmin" connection-factory="mncHttpConnectionFactory" auto-startup="true"/>
+    <rabbit:template id="rabbitTemplate" connection-factory="mncHttpConnectionFactory" reply-timeout="${rabbitmq.reply-timeout}" receive-timeout="${rabbitmq.receive-timeout}" />
+    <!-- 通用通道
+    <rabbit:queue id="genericHttpQueue" name="${rabbitmq.generic.http.queue}" auto-delete="false" durable="true" exclusive="false"/>
+    <rabbit:topic-exchange id="rabbitExchange" name="${rabbitmq.generic.exchange}" durable="true" auto-delete="false">
+        <rabbit:bindings>
+            <rabbit:binding queue="genericHttpQueue" pattern="${rabbitmq.generic.http.routekey}"/>
+        </rabbit:bindings>
+    </rabbit:topic-exchange>
+    <bean id="genericHttpMsgListener" class="net.icsoc.mnc.http.consumer.HttpMsgListener"/>
+     -->
+    <!-- 专用http通道 -->
+    <rabbit:queue id="httpQueue" name="${rabbitmq.http.default.queue}" auto-delete="false" durable="true" exclusive="false"/>
+    <rabbit:topic-exchange id="rabbitExchange" name="${rabbitmq.http.exchange}" durable="true" auto-delete="false">
+        <rabbit:bindings>
+            <rabbit:binding queue="httpQueue" pattern="${rabbitmq.http.default.routekey}"/>
+        </rabbit:bindings>
+    </rabbit:topic-exchange>
+    <bean id="httpMsgListener" class="net.icsoc.mnc.http.consumer.HttpMsgListener"/>
+    
+    <rabbit:listener-container connection-factory="mncHttpConnectionFactory" acknowledge="manual" concurrency="${rabbitmq.listener.concurrency}" max-concurrency="${rabbitmq.listener.max-concurrency}" prefetch="${rabbitmq.listener.prefetch}">
+    	<rabbit:listener ref="httpMsgListener" method="onMessage" queue-names="${rabbitmq.http.default.queue}"/>
+        <!-- <rabbit:listener ref="genericHttpMsgListener" method="onMessage" queue-names="${rabbitmq.generic.http.queue}"/> -->
+    </rabbit:listener-container>
+    
+</beans>

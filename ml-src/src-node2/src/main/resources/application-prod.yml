@@ -1,0 +1,42 @@
+##profile
+spring:
+  profiles:
+    active: prod
+##info
+info: 
+  app: 
+    url: http://src.ml.com/src/eureka
+##server#
+server: 
+  port: 8888
+##eureka##
+eureka: 
+  environment: prod
+  instance: 
+    hostname: src-node2
+##eureka服务器在接收到最后一个心跳之后等待的时间，然后才能从列表中删除此实例 默认90s（开发环境)
+    lease-expiration-duration-in-seconds: 30
+##eureka客户端需要向eureka服务器发送心跳的频率 默认30s （开发环境)
+    lease-renewal-interval-in-seconds: 5
+  server: 
+##启动保护机制,解决在网络故障时自动注销实例问题##
+    enable-self-preservation: false
+##每隔30秒清理无效节点
+    eviction-interval-timer-in-ms: 30000
+    response-cache-update-interval-ms: 3000
+##集群节点间读取信息的超时时间
+    peer-node-read-time-out-ms: 500
+  client: 
+    serviceUrl:
+      defaultZone: http://src-node0-blue:8888/src/eureka/,http://src-node1-blue:8888/src/eureka/
+management:
+  endpoint: 
+    beans: 
+      enabled: false
+    health: 
+      show-details: ALWAYS
+  endpoints: 
+    web: 
+      exposure: 
+        include: "*"
+        exclude: env,beans,scheduledtasks,loggers

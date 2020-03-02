@@ -1,0 +1,76 @@
+##server#
+server: 
+  port: 8888
+  tomcat: 
+    maxThreads: 10
+    minSpareThreads: 5
+  servlet: 
+    context-path: /http
+##profile
+spring:
+  profiles:
+    active: prod
+##swagger2 enable
+swagger: 
+  enable: true
+##datasource config#
+datasource:
+  #read-write#
+  rw: 
+    url: jdbc:mysql://pc-2ze5jpv94b9z7v202.mysql.polardb.rds.aliyuncs.com:3306/mnc_prod?useUnicode=true&characterEncoding=utf8&serverTimezone=CST
+    username: mnc_prod
+    password: jyadd23PyjnuFqwO
+  #only read#
+  r: 
+    url: jdbc:mysql://pc-2ze5jpv94b9z7v202.mysql.polardb.rds.aliyuncs.com:3306/mnc_prod?useUnicode=true&characterEncoding=utf8&serverTimezone=CST
+    username: mnc_prod
+    password: jyadd23PyjnuFqwO
+##redis config#
+redis: 
+  host: 87e32dc5302847cc.m.cnbja.kvstore.aliyuncs.com
+  port: 6379
+  pass: 87e32dc5302847cc:welcome2ICSOC
+  database: 6
+  pool: 
+    maxWaitMillis: 0
+##eureka##
+eureka: 
+  client: 
+    service-url: 
+      defaultZone: http://src.ml.com/src/eureka
+management:
+  endpoint: 
+    beans: 
+      enabled: false
+    health: 
+      show-details: ALWAYS
+  endpoints: 
+    web: 
+      exposure: 
+        include: "*"
+        exclude: env,beans,scheduledtasks,loggers
+##rabbitMq config
+rabbitmq:
+  host: nonctimq.ml.com
+  port: 5672
+  username: guest
+  password: guest
+  receive-timeout: 1000
+  reply-timeout: 1000
+  listener: 
+    concurrency: 15
+    max-concurrency: 15
+    prefetch: 150
+##okhttp
+okhttp:
+  client: 
+    connectTimeout: 1000
+    readTimeout: 5000
+    threadPool: 
+      coreThreadSize: 100
+      maxThreadSize: 500
+      threadKeepAliveTime: 60000
+    dispatcher: 
+      maxRequests: 500
+      maxRequestsPerHost: 300
+  max-retry: 2

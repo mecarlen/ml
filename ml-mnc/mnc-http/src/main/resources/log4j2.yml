@@ -1,0 +1,92 @@
+Configuration:
+  status: warn
+
+  Properties: # 定义全局变量
+    Property: # 缺省配置（用于开发环境）。其他环境需要在VM参数中指定，如下：
+      - name: log.level.console
+        value: info
+      - name: log.level.mnc
+        value: info
+      - name: root.path
+        value: /var/log/app/mnc.ml.com
+      - name: project.name
+        value: mnc
+
+  Appenders:
+    Console:  #输出到控制台
+      name: CONSOLE
+      target: SYSTEM_OUT
+      ThresholdFilter:
+        level: ${log.level.console}
+        onMatch: ACCEPT
+        onMismatch: DENY
+      PatternLayout:
+        pattern: "%d{yyyy-MM-dd HH:mm:ss,SSS}{GMT+8}:%4p %t (%F:%L) - %m%n"
+    RollingFile: # 输出到文件，超过150MB归档
+      - name: MNC-ALL
+        ignoreExceptions: false
+        fileName: "${root.path}/mnc-all.log"
+        filePattern: "${root.path}/mnc-all-%d{yyyy-MM-dd}-%i.log"
+        PatternLayout:
+          pattern: "%d{yyyy-MM-dd HH:mm:ss,SSS}{GMT+8} %level:%4p %t (%F:%L) - %m%n"
+        Policies:
+          TimeBasedTriggeringPolicy: 
+            interval: 1
+            modulate: true
+          SizeBasedTriggeringPolicy:
+            size: "450 MB"
+        DefaultRolloverStrategy:
+          max: 10
+      - name: MNC-HTTP
+        ignoreExceptions: false
+        fileName: "${root.path}/mnc-http.log"
+        filePattern: "${root.path}/mnc-http-%d{yyyy-MM-dd}-%i.log"
+        PatternLayout:
+          pattern: "%d{yyyy-MM-dd HH:mm:ss,SSS}{GMT+8} %level:%4p %t (%F:%L) - %m%n"
+        Policies:
+          TimeBasedTriggeringPolicy: 
+            interval: 1
+            modulate: true
+          SizeBasedTriggeringPolicy:
+            size: "450 MB"
+        DefaultRolloverStrategy:
+          max: 10
+      - name: MNC-ADM
+        ignoreExceptions: false
+        fileName: "${root.path}/mnc-adm.log"
+        filePattern: "${root.path}/mnc-adm-%d{yyyy-MM-dd}-%i.log"
+        PatternLayout:
+          pattern: "%d{yyyy-MM-dd HH:mm:ss,SSS}{GMT+8} %level:%4p %t (%F:%L) - %m%n"
+        Policies:
+          TimeBasedTriggeringPolicy: 
+            interval: 1
+            modulate: true
+          SizeBasedTriggeringPolicy:
+            size: "450 MB"
+        DefaultRolloverStrategy:
+          max: 10
+  Loggers:
+    Root:
+      level: ${log.level.console}
+      AppenderRef:
+        - ref: CONSOLE
+        #- ref: MNC-ALL
+    Logger:
+      - name: net.icsoc.mnc.http
+        additivity: false
+        level: ${log.level.mnc}
+        AppenderRef:
+          - ref: CONSOLE
+          #- ref: MNC-HTTP
+      - name: net.icsoc.mnc.admin
+        additivity: false
+        level: ${log.level.mnc}
+        AppenderRef:
+          - ref: CONSOLE
+          #- ref: MNC-ADM
+      - name: net.icsoc.mnc
+        additivity: false
+        level: ${log.level.mnc}
+        AppenderRef:
+          - ref: CONSOLE
+          #- ref: MNC-ALL
