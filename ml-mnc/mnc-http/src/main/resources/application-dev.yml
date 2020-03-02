@@ -17,14 +17,14 @@ swagger:
 datasource:
   #read-write#
   rw: 
-    url: jdbc:mysql://rm-2ze0xh993765uw4f3.mysql.rds.aliyuncs.com:3306/mnc_dev?useUnicode=true&characterEncoding=utf8&serverTimezone=CST
+    url: jdbc:mysql://mldb.ml.com:3306/mnc_dev?useUnicode=true&characterEncoding=utf8&serverTimezone=CST
     username: mnc_dev
-    password: 1LeHMLIiJf^zIjK5
+    password: 123456
   #only read#
   r: 
-    url: jdbc:mysql://rm-2ze0xh993765uw4f3.mysql.rds.aliyuncs.com:3306/mnc_dev?useUnicode=true&characterEncoding=utf8&serverTimezone=CST
+    url: jdbc:mysql://mldb.ml.com:3306/mnc_dev?useUnicode=true&characterEncoding=utf8&serverTimezone=CST
     username: mnc_dev
-    password: 1LeHMLIiJf^zIjK5
+    password: 123456
 ##redis config#
 redis: 
   host: r-2zeuly0uoqoqjjzxp1.redis.rds.aliyuncs.com

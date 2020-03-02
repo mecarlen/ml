@@ -18,14 +18,14 @@ spring:
 datasource:
   #read-write#
   rw:
-    url: jdbc:mysql://pc-2ze594uc6m5ny2y8k.mysql.polardb.rds.aliyuncs.com:3306/mnc_test?useUnicode=true&characterEncoding=utf8&serverTimezone=CST
+    url: jdbc:mysql://mldb.ml.com:3306/mnc_test?useUnicode=true&characterEncoding=utf8&serverTimezone=CST
     username: mnc_test
-    password: ehWNpZHSHjmOb3jD
+    password: 123456
   #only read#
   r:
-    url: jdbc:mysql://pc-2ze594uc6m5ny2y8k.mysql.polardb.rds.aliyuncs.com:3306/mnc_test?useUnicode=true&characterEncoding=utf8&serverTimezone=CST
+    url: jdbc:mysql://mldb.ml.com:3306/mnc_test?useUnicode=true&characterEncoding=utf8&serverTimezone=CST
     username: mnc_test
-    password: ehWNpZHSHjmOb3jD
+    password: 123456
 ##redis config#
 redis:
   host: r-2zeuly0uoqoqjjzxp1.redis.rds.aliyuncs.com
