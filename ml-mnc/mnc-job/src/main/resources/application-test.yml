@@ -28,9 +28,9 @@ datasource:
     password: 123456
 ##redis config#
 redis:
-  host: r-2zeuly0uoqoqjjzxp1.redis.rds.aliyuncs.com
+  host: redis.ml.com
   port: 6379
-  pass: yolPv8ywHWVVVjYi
+  pass: 123456
   database: 8
   pool:
     maxWaitMillis: 0

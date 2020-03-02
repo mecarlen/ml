@@ -27,9 +27,9 @@ datasource:
     password: 123456
 ##redis config#
 redis: 
-  host: 87e32dc5302847cc.m.cnbja.kvstore.aliyuncs.com
+  host: redis.ml.com
   port: 6379
-  pass: 87e32dc5302847cc:welcome2ICSOC
+  pass: 123456
   database: 6
   pool: 
     maxWaitMillis: 0
