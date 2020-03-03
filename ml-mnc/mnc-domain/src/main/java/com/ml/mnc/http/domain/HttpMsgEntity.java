@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
@@ -36,7 +38,9 @@ public class HttpMsgEntity extends BaseEntity<Long, HttpMsgVO> implements HttpMs
 	private String businessId;
 	private String businessType;
 	private Long businessAcceptTimeMills;
+	@Field(type = FieldType.Text, analyzer = "ik_max_word", searchAnalyzer = "ik_smart", store = true)
 	private String msgContent;
+	@Field(type = FieldType.Text, analyzer = "ik_max_word", searchAnalyzer = "ik_smart", store = true)
 	private String sendUrl;
 	private String authJson;
 	private Long authExpireTimeMills;

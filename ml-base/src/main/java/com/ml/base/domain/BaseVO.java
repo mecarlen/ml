@@ -3,6 +3,14 @@ package com.ml.base.domain;
 import java.io.Serializable;
 import java.util.Date;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.DateFormat;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonFormat.Shape;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,10 +26,17 @@ import lombok.Setter;
 @Getter
 @Setter
 public abstract class BaseVO<ID extends Serializable, E extends BaseEntity<ID, ?>> implements Entity<ID> {
-    protected ID id;
+	@Id
+	protected ID id;
     protected Integer yn;
+    @Field(type = FieldType.Date, format = DateFormat.custom, pattern = "yyyy-MM-dd HH:mm:ss:SSS", store = true)
+	@JsonFormat(shape = Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss:SSS", timezone = "GMT+8")
     protected Date createTime;
+    private Long createTimeMills;
+    @Field(type = FieldType.Date, format = DateFormat.custom, pattern = "yyyy-MM-dd HH:mm:ss:SSS", store = true)
+	@JsonFormat(shape = Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss:SSS", timezone = "GMT+8")
     protected Date updateTime;
+    private Long updateTimeMills;
 
     /**
      * <pre>

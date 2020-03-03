@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.elasticsearch.annotations.Document;
 
 import com.google.common.collect.Lists;
 import com.ml.base.domain.BaseVO;
@@ -22,6 +23,7 @@ import lombok.Setter;
  * 
  * @author mecarlen.Wang 2019年9月16日 下午4:00:09
  */
+@Document(indexName = "http", type = "message")
 @Setter
 @Getter
 public class HttpMsgVO extends BaseVO<Long, HttpMsgEntity> implements HttpMsg {

@@ -1,5 +1,12 @@
 package com.ml.mnc;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
+import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.xpack.client.PreBuiltXPackTransportClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -112,6 +119,40 @@ public class ApplicationInitializer extends SpringBootServletInitializer {
 		public void addInterceptors(InterceptorRegistry registry) {
 			// 分页
 			registry.addInterceptor(new PageInterceptor()).addPathPatterns("/**/page/**");
+		}
+
+	}
+	
+	/**
+	 * <pre>
+	 * ES配置
+	 * 
+	 * </pre>
+	 */
+	@Configuration
+	static class ElasticsearchConfig {
+		@Value("${es.cluster.name}")
+		private String clusterName;
+		@Value("${es.cluster.address}")
+		private String clusterAddress;
+		@Value("${es.cluster.user}")
+		private String xpackUsername;
+		@Value("${es.cluster.pwd}")
+		private String xpackPassword;
+
+		@Bean
+		public TransportClient transportClient() throws UnknownHostException {
+			TransportClient client = new PreBuiltXPackTransportClient(
+					Settings.builder().put("cluster.name", this.clusterName)
+							.put("xpack.security.user", this.xpackUsername + ":" + this.xpackPassword).build());
+			String[] clusterNodes = this.clusterAddress.split(",");
+			for (String clusterNode : clusterNodes) {
+				String[] node = clusterNode.split(":");
+				client.addTransportAddress(
+						new InetSocketTransportAddress(InetAddress.getByName(node[0]), Integer.valueOf(node[1])));
+			}
+
+			return client;
 		}
 
 	}

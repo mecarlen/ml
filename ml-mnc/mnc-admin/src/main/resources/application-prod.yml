@@ -70,3 +70,10 @@ okhttp:
     dispatcher:
       maxRequests: 64
       maxRequestsPerHost: 5
+####elasticsearch###
+es: 
+  cluster: 
+    name: es-cn-0pp14k9tc000a63hs
+    address: es-cn-0pp14k9tc000a63hs.elasticsearch.aliyuncs.com:9300
+    user: elastic
+    pwd: 6XzCqFXwCMryon2b
