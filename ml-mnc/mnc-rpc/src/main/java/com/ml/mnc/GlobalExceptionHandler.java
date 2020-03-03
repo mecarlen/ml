@@ -6,16 +6,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.ml.base.BussinessException;
 import com.ml.base.SystemException;
-import com.ml.base.controller.WebResponse;
-import com.ml.base.controller.WebResponse.WebResponseCode;
+import com.ml.mnc.RpcResponse.RpcResponseCode;
 
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * com.ml.mnc
- *
- * @author yansongda <me@yansongda.cn>
- * @version 2019/11/4 下午1:39
+ * <pre>
+ * <b>异常统一处理</b>
+ * 
+ * </pre>
+ * 
+ * @author mecarlen.Wang 2020年3月3日 下午3:19:04
  */
 @Slf4j
 @ControllerAdvice
@@ -28,15 +29,15 @@ public class GlobalExceptionHandler {
 	 * </pre>
 	 */
 	@ExceptionHandler(BussinessException.class)
-	public @ResponseBody WebResponse<Boolean> handleBusinessException(BussinessException ex) {
+	public @ResponseBody RpcResponse<Boolean> handleBusinessException(BussinessException ex) {
 		log.error("bizErrorCode:" + ex.getErrorCode(), ex);
-		WebResponse<Boolean> response = new WebResponse<>();
+		RpcResponse<Boolean> response = new RpcResponse<>();
 		BussinessException.BizErrorCode errorCode = BussinessException.BizErrorCode.getInstance(ex.getErrorCode());
 		if (null != errorCode) {
 			response.code(BussinessException.BizErrorCode.getInstance(ex.getErrorCode()));
-			response.setErrorMsg(ex.getMessage());
+			response.errorMsg(ex.getMessage());
 		} else {
-			response.code(WebResponseCode.BIZEXCEPTION).errorMsg(ex.getErrorCode() + "-" + ex.getMessage());
+			response.code(RpcResponseCode.BIZEXCEPTION).errorMsg(ex.getErrorCode() + "-" + ex.getMessage());
 
 		}
 		return response;
@@ -49,24 +50,23 @@ public class GlobalExceptionHandler {
 	 * </pre>
 	 */
 	@ExceptionHandler(SystemException.class)
-	public WebResponse<Boolean> handleSystemException(SystemException ex) {
+	public @ResponseBody RpcResponse<Boolean> handleSystemException(SystemException ex) {
 		log.error("systemException:", ex);
-		WebResponse<Boolean> response = new WebResponse<>();
-		response.code(WebResponseCode.SYSEXCEPTION).errorMsg(ex.getMessage());
+		RpcResponse<Boolean> response = new RpcResponse<>();
+		response.code(RpcResponseCode.SYSEXCEPTION).errorMsg(ex.getMessage());
 		return response;
 	}
-	
+
 	/**
 	 * <pre>
 	 * 未知异常
 	 * 
 	 * </pre>
-	 * */
+	 */
 	@ExceptionHandler(value = Exception.class)
-	@ResponseBody
-	public WebResponse<Boolean> handlerGlobalException(Exception ex) {
+	public @ResponseBody RpcResponse<Boolean> handlerGlobalException(Exception ex) {
 		log.error("unKnowException", ex);
-		WebResponse<Boolean> response = new WebResponse<>();
-		return response.code(WebResponseCode.SYSEXCEPTION).errorMsg("unKnowException");
+		RpcResponse<Boolean> response = new RpcResponse<>();
+		return response.code(RpcResponseCode.SYSEXCEPTION).errorMsg("unKnowException");
 	}
 }

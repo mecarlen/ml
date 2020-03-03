@@ -17,6 +17,13 @@ import java.util.Set;
  * @author mecarlen 2015年10月29日 下午5:06:35
  */
 public interface CacheUtils {
+	/** 缓存开关 */
+    final public static String CACHE_SWITCH="outbound:cache_switch";
+    /** 缓存开关-开 */
+    final public static String OPEN_CACHE_SWITCH="open";
+    /** 缓存开关-关 */
+    final public static String CLOSE_CACHE_SWITCH="close";
+    
 	/**
 	 * <pre>
 	 * 将String值value关联到key

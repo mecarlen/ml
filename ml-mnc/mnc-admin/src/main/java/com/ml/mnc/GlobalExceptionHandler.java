@@ -49,7 +49,7 @@ public class GlobalExceptionHandler {
 	 * </pre>
 	 */
 	@ExceptionHandler(SystemException.class)
-	public WebResponse<Boolean> handleSystemException(SystemException ex) {
+	public @ResponseBody WebResponse<Boolean> handleSystemException(SystemException ex) {
 		log.error("systemException:", ex);
 		WebResponse<Boolean> response = new WebResponse<>();
 		response.code(WebResponseCode.SYSEXCEPTION).errorMsg(ex.getMessage());
@@ -63,8 +63,7 @@ public class GlobalExceptionHandler {
 	 * </pre>
 	 * */
 	@ExceptionHandler(value = Exception.class)
-	@ResponseBody
-	public WebResponse<Boolean> handlerGlobalException(Exception ex) {
+	public @ResponseBody WebResponse<Boolean> handlerGlobalException(Exception ex) {
 		log.error("unKnowException", ex);
 		WebResponse<Boolean> response = new WebResponse<>();
 		return response.code(WebResponseCode.SYSEXCEPTION).errorMsg("unKnowException");
