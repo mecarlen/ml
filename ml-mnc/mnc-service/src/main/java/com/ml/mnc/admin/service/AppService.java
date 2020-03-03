@@ -43,4 +43,6 @@ public interface AppService extends BaseService<Long, AppVO> {
 	 * @return AppVO
 	 */
 	AppVO getApp(String appCode);
+	
+	AppVO getAppFromLocal(String appCode);
 }
