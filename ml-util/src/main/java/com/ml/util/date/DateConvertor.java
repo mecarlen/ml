@@ -1,7 +1,9 @@
 package com.ml.util.date;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -71,15 +73,8 @@ public class DateConvertor {
             return null;
         }
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format.value());
-        try {
-            return simpleDateFormat.parse(dateStr);
-        } catch (ParseException ex) {
-            ex.printStackTrace();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return null;
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(format.value());
+        return Date.from(LocalDateTime.parse(dateStr, dateFormatter).atZone(ZoneId.systemDefault()).toInstant());
     }
 
     /**

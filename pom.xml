@@ -202,5 +202,6 @@
 		<module>ml-src</module>
 		<module>ml-smc</module>
 		<module>ml-mnc</module>
+		<module>ml-msf</module>
 	</modules>
 </project>

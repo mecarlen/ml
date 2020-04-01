@@ -1,0 +1,27 @@
+##datasource pool#
+datasource:
+  driver-class-name: com.mysql.jdbc.Driver
+  rw:
+    url: jdbc:mysql://rm-2ze0xh993765uw4f3.mysql.rds.aliyuncs.com:3306/project?useUnicode=true&characterEncoding=utf8&autoReconnect=true&&useSSL=true&serverTimezone=CST
+    username: dmproject
+    password: dmProject123
+  r:
+    url: jdbc:mysql://rm-2ze0xh993765uw4f3.mysql.rds.aliyuncs.com:3306/project?useUnicode=true&characterEncoding=utf8&autoReconnect=true&&useSSL=true&serverTimezone=CST
+    username: dmproject
+    password: dmProject123
+  dbcp2: 
+    initial-size: 5
+    max-active: 50
+    max-wait-millis: 15000
+    min-idle: 5
+##redis pool#
+redis: 
+  host: r-2zeuly0uoqoqjjzxp1.redis.rds.aliyuncs.com
+  port: 6379
+  pass: yolPv8ywHWVVVjYi
+  database: 5
+  pool: 
+    maxWaitMillis: 500
+    maxIdle: 10
+    maxTotal: 50
+    testOnBorrow: true
