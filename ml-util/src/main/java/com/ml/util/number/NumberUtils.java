@@ -11,7 +11,7 @@ import java.util.Locale;
  * 描述:0.20 #0.00 0.20 0.20 ##.## .2(不显示前面和后面的0)
  * </pre>
  * 
- * @metanoia.lang
+ * @author metanoia.lang
  * @author mecarlen 2014-9-26 下午3:03:37
  */
 public class NumberUtils {
